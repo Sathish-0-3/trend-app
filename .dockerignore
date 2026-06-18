@@ -1,0 +1,13 @@
+.git
+
+README.md
+
+terraform
+
+*.tfstate
+
+*.tfstate.*
+
+.idea
+
+.vscode

@@ -1,0 +1,15 @@
+terraform.tfstate
+
+terraform.tfstate.backup
+
+.terraform/
+
+*.pem
+
+.env
+
+node_modules
+
+.vscode
+
+.idea
