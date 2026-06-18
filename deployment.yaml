@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: trend-app
-          image: <your-image>
+          image: sathishbalaji03/trend-app:latest
           ports:
             - containerPort: 80
           resources:
