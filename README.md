@@ -1,91 +1,255 @@
-DevOps Practice Project – Dist Directory
+## Project Overview
 
-This repository contains the production-ready build files (dist folder) for DevOps practice and deployment exercises.
+This project demonstrates the complete deployment of a production-ready React application using modern DevOps practices.
 
-It is intentionally structured to help learners focus on CI/CD pipelines, hosting, containerization, and infrastructure setup rather than application development.
+The application is containerized using Docker, infrastructure is provisioned using Terraform, deployed to Amazon EKS through Jenkins CI/CD, and monitored using Prometheus and Grafana.
 
-📁 What This Repository Contains
+# Technologies Used
 
-dist/ – Compiled and production-ready static files
+- React (Production Build)
+- Docker
+- Docker Hub
+- Terraform
+- AWS EC2
+- AWS IAM
+- Amazon EKS
+- Kubernetes
+- Jenkins
+- GitHub
+- Prometheus
+- Grafana
+- AWS Network Load Balancer (NLB)
 
-HTML
+# Project Architecture
 
-CSS
+GitHub Repository
+        │
+        ▼
+ GitHub Webhook
+        │
+        ▼
+     Jenkins
+        │
+ ┌──────┴─────────┐
+ │                │
+ ▼                ▼
+Docker Build   Docker Push
+                    │
+                    ▼
+               Docker Hub
+                    │
+                    ▼
+             Kubernetes (EKS)
+                    │
+             Deployment & Service
+                    │
+                    ▼
+      AWS Network Load Balancer
+                    │
+                    ▼
+               End Users
 
-JavaScript
+Monitoring:
 
-Assets (images, fonts, etc.)
+Prometheus -----> Grafana
 
-These files are ready to deploy to:
+# Project Structure
 
-Web servers (Nginx / Apache)
+trend-app/
+│
+├── Dockerfile
+├── Jenkinsfile
+├── deployment.yaml
+├── service.yaml
+├── .dockerignore
+├── .gitignore
+├── README.md
+│
+└── terraform/
+      ├── main.tf
+      └── outputs.tf
 
-Cloud platforms (AWS S3, Azure Blob, GCP Storage)
+# Setup Instructions
 
-Containerized environments (Docker + Nginx)
+## Step 1 - Clone Repository
 
-Kubernetes clusters
+git clone https://github.com/Vennilavanguvi/Trend.git
 
-CI/CD pipeline demonstrations
+cd trend-app
 
-🎯 Purpose of This Repository
+## Step 2 - Build Docker Image
 
-This repository is designed for:
+docker build -t trend-app .
 
-DevOps beginners
+Verify image
 
-CI/CD practice
+docker images
 
-Deployment pipeline testing
+## Step 3 - Push Image to Docker Hub
 
-Docker & Kubernetes deployment exercises
+docker tag trend-app sathishbalaji03/trend-app:latest
 
-Web server configuration practice
+docker push sathishbalaji03/trend-app:latest
 
-Reverse proxy and load balancer setup
+## Step 4 - Provision Infrastructure
 
-The goal is to simulate real-world deployment scenarios using already built application files.
+Initialize Terraform
 
-❓ Why is there NO package.json?
+terraform init
 
-You may notice that this repository does not include:
+Plan Infrastructure
 
-package.json
+terraform plan
 
-node_modules
+Create Infrastructure
 
-Source code (src/)
+terraform apply
 
-Build tools configuration
+Resources Created
 
-✅ Reason:
+- VPC
+- Internet Gateway
+- Public Subnet
+- Route Table
+- Security Group
+- IAM Role
+- EC2 Instance
 
-This repository only contains the final production build output (dist), not the development source code.
+## Step 5 - Install Jenkins
 
-In a typical project:
+Install Jenkins on EC2.
 
-Developers write source code.
+Install plugins
 
-The project is built using tools like:
+- Docker
+- Git
+- Pipeline
+- Kubernetes
+- Docker Pipeline
 
-Node.js
 
-Webpack
+## Step 6 - Create Amazon EKS Cluster
 
-Vite
+eksctl create cluster \
+--name trend-cluster1 \
+--region ap-south-1 \
+--nodegroup-name workers \
+--node-type t3.small \
+--nodes 2
 
-React (or other frameworks)
+Verify
 
-A dist/ folder is generated.
+kubectl get nodes
 
-Only the production build is deployed to servers.
+## Step 7 - Deploy Application
 
-This repository represents step 4 only.
+kubectl apply -f deployment.yaml
 
-Since this is already the compiled output:
+kubectl apply -f service.yaml
 
-No dependencies are required
+Verify
 
-No build process is required
+kubectl get pods
 
-No package.json is needed
+kubectl get svc
+
+## Step 8 - Install AWS Load Balancer Controller
+
+Install
+
+- IAM Policy
+- OIDC Provider
+- Helm Chart
+
+Verify
+
+kubectl get deployment -n kube-system aws-load-balancer-controller
+
+## Step 9 - Install Prometheus & Grafana
+
+helm install monitoring prometheus-community/kube-prometheus-stack
+
+Verify
+
+kubectl get pods
+## Step 10 - Access Application
+
+Application URL
+
+http://k8s-default-trendser-b160924a03-88dfdc8cf4a697ba.elb.ap-south-1.amazonaws.com/
+
+## Step 11 - Access Grafana
+
+http://a906a036c45684e5099df35e1520dfab-1055800361.ap-south-1.elb.amazonaws.com
+
+# CI/CD Pipeline Explanation
+
+The Jenkins Declarative Pipeline automates the complete deployment process.
+
+### Stage 1 - Checkout
+
+- Pulls the latest code from GitHub.
+
+### Stage 2 - Build Docker Image
+
+- Builds a Docker image using the Dockerfile.
+
+Command executed
+
+docker build
+
+### Stage 3 - Push Docker Image
+
+- Logs into Docker Hub.
+- Pushes the Docker image.
+
+Commands executed
+
+docker push
+
+### Stage 4 - Deploy to Kubernetes
+
+Deploys the application to Amazon EKS using
+
+kubectl apply -f deployment.yaml
+
+kubectl apply -f service.yaml
+
+
+### Stage 5 - Verification
+
+Kubernetes automatically creates
+
+- Deployment
+- ReplicaSet
+- Pods
+- Service
+- Network Load Balancer
+
+
+# Monitoring
+
+Monitoring is implemented using
+
+- Prometheus
+- Grafana
+
+Metrics collected
+
+- CPU Usage
+- Memory Usage
+- Network Usage
+- Pod Status
+- Node Status
+- Cluster Health
+
+# Docker Hub Repository
+
+https://hub.docker.com/r/sathishbalaji03/trend-app
+
+# GitHub Repository
+https://github.com/Sathish-0-3/trend-app
+
+# Outcome
+
+Successfully deployed a production-ready React application using Docker, Terraform, Jenkins, Amazon EKS, Kubernetes, AWS Network Load Balancer, Prometheus, and Grafana with an automated CI/CD pipeline.
