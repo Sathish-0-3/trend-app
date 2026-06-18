@@ -20,54 +20,9 @@ The application is containerized using Docker, infrastructure is provisioned usi
 - Grafana
 - AWS Network Load Balancer (NLB)
 
-# Project Architecture
-
-GitHub Repository
-        │
-        ▼
- GitHub Webhook
-        │
-        ▼
-     Jenkins
-        │
- ┌──────┴─────────┐
- │                │
- ▼                ▼
-Docker Build   Docker Push
-                    │
-                    ▼
-               Docker Hub
-                    │
-                    ▼
-             Kubernetes (EKS)
-                    │
-             Deployment & Service
-                    │
-                    ▼
-      AWS Network Load Balancer
-                    │
-                    ▼
-               End Users
-
 Monitoring:
 
 Prometheus -----> Grafana
-
-# Project Structure
-
-trend-app/
-│
-├── Dockerfile
-├── Jenkinsfile
-├── deployment.yaml
-├── service.yaml
-├── .dockerignore
-├── .gitignore
-├── README.md
-│
-└── terraform/
-      ├── main.tf
-      └── outputs.tf
 
 # Setup Instructions
 
